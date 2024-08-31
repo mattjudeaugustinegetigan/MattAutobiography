@@ -81,7 +81,7 @@ My long-term goals include owning my own company, and I'm committed to making a 
 
 # Conclusion
 st.subheader("Conclusion")
-st.image("images/conclusion.jpg", caption="Grateful for the Journey")
+st.image("conclusion.jpg", caption="Grateful for the Journey")
 st.write("""
 In closing, my journey has been one of growth, perseverance, and continuous learning. 
 I hope that by sharing my story, I can inspire others to chase their dreams and face challenges head-on. 
