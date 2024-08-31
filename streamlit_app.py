@@ -3,9 +3,11 @@ import streamlit as st
 # Set the page layout
 st.set_page_config(page_title="Matt Getigan's Autobiography", layout="centered")
 
-# Title and Header
-st.title("The Life Journey of Matt Jude Augustine U. Getigan")
-st.header("From Humble Beginnings to Professional Growth")
+# Title and Header with center alignment
+st.markdown("""
+    <h1 style='text-align: center;'>The Life Journey of Matt Jude Augustine U. Getigan</h1>
+    <h2 style='text-align: center;'>From Humble Beginnings to Professional Growth</h2>
+    """, unsafe_allow_html=True)
 
 # Introduction
 st.subheader("Introduction")
