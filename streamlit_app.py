@@ -1,151 +1,89 @@
 import streamlit as st
-import pandas as pd
-import math
-from pathlib import Path
 
-# Set the title and favicon that appear in the Browser's tab bar.
-st.set_page_config(
-    page_title='GDP dashboard',
-    page_icon=':earth_americas:', # This is an emoji shortcode. Could be a URL too.
-)
+# Set the page layout
+st.set_page_config(page_title="Matt Getigan's Autobiography", layout="centered")
 
-# -----------------------------------------------------------------------------
-# Declare some useful functions.
+# Title and Header
+st.title("The Life Journey of Matt Jude Augustine U. Getigan")
+st.header("From Humble Beginnings to Professional Growth")
 
-@st.cache_data
-def get_gdp_data():
-    """Grab GDP data from a CSV file.
+# Introduction
+st.subheader("Introduction")
+st.image("portal.jpg", caption="A Glimpse of My Journey")
+st.write("""
+Hi there! I'm Matt Jude Augustine U. Getigan. I was born and raised in Cebu, 
+and I've always been driven by a strong work ethic and a passion for learning. 
+Through this autobiography, I want to share my story with you the experiences that shaped me 
+and the path I've walked to become who I am today.
+""")
 
-    This uses caching to avoid having to read the file every time. If we were
-    reading from an HTTP endpoint instead of a file, it's a good idea to set
-    a maximum age to the cache with the TTL argument: @st.cache_data(ttl='1d')
-    """
+# Early Life
+st.subheader("Early Life")
+st.image("bata.jpg", caption="My Hometown")
+st.write("""
+Growing up in Cebu City, I was surrounded by a supportive family that instilled in me 
+the values of hard work and perseverance. My childhood was filled with both joys and challenges, 
+all of which played a significant role in shaping my character.
+I attended Zapatera Elementary School from 2006 to 2012, where I first discovered my love for learning 
+and began building the foundation for my future.
+""")
 
-    # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'data/gdp_data.csv'
-    raw_gdp_df = pd.read_csv(DATA_FILENAME)
+# Adolescence
+st.subheader("Adolescence")
+st.image("red.jpg", caption="Formative School Years")
+st.write("""
+My teenage years were a time of exploration and growth. During my time at Abellana National Highschool (2012-2016) 
+and later at Cebu Institute of Technology – University for Senior High School (2016-2018), 
+I began to develop a clearer sense of who I was and what I wanted to achieve in life.
+These years were marked by my involvement in University Dance Troupe, as well as the ups and downs 
+that come with growing up. Each experience contributed to my understanding of the world and my place in it.
+""")
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
+# Adulthood
+st.subheader("Adulthood")
+st.image("shs.jpg", caption="Embarking on My Professional Journey")
+st.write("""
+After graduating high school, I pursued a degree in Information Technology at Cebu Institute of Technology – University. 
+My college years (2018-present) were transformative, as I balanced my studies with the beginning of my professional career.
+I started working as a Lead Generation Specialist & Sales Representative at AVANT in 2020, where I learned the ropes 
+of customer service and project management.
+Later, I took on the role of a Prior-Auth Specialist/Medical Staff at Center for the Healthy Hearts (2021-2024), 
+where I gained valuable experience in the medical field, handling patient interactions and mastering administrative tasks.
+""")
 
-    # The data above has columns like:
-    # - Country Name
-    # - Country Code
-    # - [Stuff I don't care about]
-    # - GDP for 1960
-    # - GDP for 1961
-    # - GDP for 1962
-    # - ...
-    # - GDP for 2022
-    #
-    # ...but I want this instead:
-    # - Country Name
-    # - Country Code
-    # - Year
-    # - GDP
-    #
-    # So let's pivot all those year-columns into two: Year and GDP
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
-    )
+# Achievements and Accomplishments
+st.subheader("Achievements and Accomplishments")
+st.image("tops.jpg", caption="Celebrating Milestones")
+st.write("""
+Throughout my career, I've been recognized for my ability to manage projects efficiently, lead teams with confidence, 
+and deliver high-quality results. I've honed my skills in multitasking, medical terminology, and administrative support, 
+all of which have been crucial to my success.
+On a personal level, I've also achieved obtaining things i've been wishing for a long time, which have been just as rewarding as my professional accomplishments.
+""")
 
-    # Convert years from string to integers
-    gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
+# Reflections
+st.subheader("Reflections")
+st.image("bagyo.jpg", caption="Looking Back with Gratitude")
+st.write("""
+Looking back, due to Typhoon Odette I see how every challenge and achievement has played a part in my personal growth. 
+I've learned the value of resilience, adaptability, and the importance of continuous living and learning.
+These experiences have shaped my approach to life and work, and I'm grateful for the lessons they've taught me.
+""")
 
-    return gdp_df
+# Future Aspirations
+st.subheader("Future Aspirations")
+st.image("fam.jpg", caption="Excited for the Future")
+st.write("""
+As I look to the future, I'm excited about the possibilities that lie ahead. 
+I plan to continue growing both personally and professionally, taking on new challenges and expanding my skills.
+My long-term goals include owning my own company, and I'm committed to making a positive impact in my field and in the lives of others.
+""")
 
-gdp_df = get_gdp_data()
-
-# -----------------------------------------------------------------------------
-# Draw the actual page
-
-# Set the title that appears at the top of the page.
-'''
-# :earth_americas: GDP dashboard
-
-Browse GDP data from the [World Bank Open Data](https://data.worldbank.org/) website. As you'll
-notice, the data only goes to 2022 right now, and datapoints for certain years are often missing.
-But it's otherwise a great (and did I mention _free_?) source of data.
-'''
-
-# Add some spacing
-''
-''
-
-min_value = gdp_df['Year'].min()
-max_value = gdp_df['Year'].max()
-
-from_year, to_year = st.slider(
-    'Which years are you interested in?',
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value])
-
-countries = gdp_df['Country Code'].unique()
-
-if not len(countries):
-    st.warning("Select at least one country")
-
-selected_countries = st.multiselect(
-    'Which countries would you like to view?',
-    countries,
-    ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
-
-''
-''
-''
-
-# Filter the data
-filtered_gdp_df = gdp_df[
-    (gdp_df['Country Code'].isin(selected_countries))
-    & (gdp_df['Year'] <= to_year)
-    & (from_year <= gdp_df['Year'])
-]
-
-st.header('GDP over time', divider='gray')
-
-''
-
-st.line_chart(
-    filtered_gdp_df,
-    x='Year',
-    y='GDP',
-    color='Country Code',
-)
-
-''
-''
-
-
-first_year = gdp_df[gdp_df['Year'] == from_year]
-last_year = gdp_df[gdp_df['Year'] == to_year]
-
-st.header(f'GDP in {to_year}', divider='gray')
-
-''
-
-cols = st.columns(4)
-
-for i, country in enumerate(selected_countries):
-    col = cols[i % len(cols)]
-
-    with col:
-        first_gdp = first_year[first_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-        last_gdp = last_year[last_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-
-        if math.isnan(first_gdp):
-            growth = 'n/a'
-            delta_color = 'off'
-        else:
-            growth = f'{last_gdp / first_gdp:,.2f}x'
-            delta_color = 'normal'
-
-        st.metric(
-            label=f'{country} GDP',
-            value=f'{last_gdp:,.0f}B',
-            delta=growth,
-            delta_color=delta_color
-        )
+# Conclusion
+st.subheader("Conclusion")
+st.image("images/conclusion.jpg", caption="Grateful for the Journey")
+st.write("""
+In closing, my journey has been one of growth, perseverance, and continuous learning. 
+I hope that by sharing my story, I can inspire others to chase their dreams and face challenges head-on. 
+Thank you for taking the time to read my autobiography. Remember, no matter where you start, with determination and effort, you can achieve great things.
+""")
